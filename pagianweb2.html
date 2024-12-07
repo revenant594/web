@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Aplicación</title>
+</head>
+<body>
+    <h1>Formulario de Captura</h1>
+    <form id="captureForm">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="email">Correo:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <h2>Datos Capturados</h2>
+    <button id="fetchData">Consultar Datos</button>
+    <ul id="dataList"></ul>
+
+    <script>document.getElementById('captureForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            const response = await fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email }),
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+
+        document.getElementById('fetchData').addEventListener('click', async () => {
+            const response = await fetch('/data');
+            const data = await response.json();
+
+            const dataList = document.getElementById('dataList');
+            dataList.innerHTML = '';
+            data.forEach((entry) => {
+                const li = document.createElement('li');
+                li.textContent = `Nombre: ${entry.name}, Correo: ${entry.email}`;
+                dataList.appendChild(li);
+            });
+        });</script>
+</body>
+</html>
